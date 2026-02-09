@@ -69,6 +69,14 @@ Thumbs.db
 *.temp
 .cache/
 
+# Test files (临时测试脚本)
+test_*.js
+test_*.json
+test_*.ps1
+try_*.js
+add_*.js
+clash_proxies.yaml
+
 # Build artifacts
 *.tsbuildinfo
 next-env.d.ts
