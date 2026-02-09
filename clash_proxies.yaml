@@ -1,0 +1,269 @@
+mixed-port: 7890
+allow-lan: false
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+secret: ""
+
+proxies:
+  # 日本代理 - ISP
+  - name: "JP-OpenComputerNetwork"
+    type: http
+    server: 180.35.223.88
+    port: 443
+    username: "111"
+    password: "111"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-AsahiNet-1"
+    type: http
+    server: 180.235.50.2
+    port: 443
+    username: "12349"
+    password: "12349"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-KDDI-1"
+    type: http
+    server: 106.173.86.95
+    port: 443
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-KansaiInfoSys"
+    type: http
+    server: 210.166.129.111
+    port: 443
+    username: "123"
+    password: "123"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-KDDI-2"
+    type: http
+    server: 106.173.86.97
+    port: 443
+    username: "12349"
+    password: "12349"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-TenriUniv"
+    type: socks5
+    server: 219.127.99.101
+    port: 443
+    username: "socks5"
+    password: "socks5"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-KDDI-3"
+    type: http
+    server: 175.134.18.237
+    port: 443
+    username: "111"
+    password: "111"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-NTTDocomo"
+    type: http
+    server: 60.43.40.233
+    port: 443
+    username: "iloveyou"
+    password: "iloveyou"
+    tls: true
+    skip-cert-verify: true
+
+  # 美国代理
+  - name: "US-ATT-1"
+    type: http
+    server: 12.180.8.60
+    port: 443
+    tls: true
+    skip-cert-verify: true
+
+  - name: "US-ATT-2"
+    type: http
+    server: 12.187.175.7
+    port: 443
+    tls: true
+    skip-cert-verify: true
+
+  # 欧洲代理
+  - name: "DE-DeutscheTelekom"
+    type: http
+    server: 217.251.227.174
+    port: 443
+    tls: true
+    skip-cert-verify: true
+
+  - name: "FR-Orange"
+    type: http
+    server: 83.195.61.158
+    port: 443
+    tls: true
+    skip-cert-verify: true
+
+  - name: "GB-Navarino"
+    type: http
+    server: 45.56.228.8
+    port: 443
+    tls: true
+    skip-cert-verify: true
+
+  - name: "FR-Free"
+    type: http
+    server: 82.64.255.151
+    port: 443
+    tls: true
+    skip-cert-verify: true
+
+  - name: "CY-EPIC"
+    type: http
+    server: 213.207.130.34
+    port: 443
+    tls: true
+    skip-cert-verify: true
+
+  # 台湾代理
+  - name: "TW-Chunghwa"
+    type: http
+    server: 114.33.6.158
+    port: 443
+    username: "admin"
+    password: "123456"
+    tls: true
+    skip-cert-verify: true
+
+  # 日本教育机构
+  - name: "JP-EDU-IAMAS"
+    type: http
+    server: 202.43.240.2
+    port: 443
+    username: "123456"
+    password: "123456"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-EDU-JPNIC-1"
+    type: http
+    server: 133.57.64.24
+    port: 443
+    username: "admin"
+    password: "admin"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-EDU-JPNIC-2"
+    type: http
+    server: 133.9.6.9
+    port: 443
+    username: "123456"
+    password: "123456"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-EDU-JPNIC-3"
+    type: http
+    server: 133.3.249.138
+    port: 443
+    username: "admin"
+    password: "admin"
+    tls: true
+    skip-cert-verify: true
+
+  - name: "JP-EDU-JPNIC-4"
+    type: http
+    server: 133.9.6.10
+    port: 443
+    username: "111"
+    password: "111"
+    tls: true
+    skip-cert-verify: true
+
+proxy-groups:
+  - name: "🚀 节点选择"
+    type: select
+    proxies:
+      - "♻️ 自动选择"
+      - "🇯🇵 日本节点"
+      - "🇺🇸 美国节点"
+      - "🇪🇺 欧洲节点"
+      - "🇹🇼 台湾节点"
+      - DIRECT
+
+  - name: "♻️ 自动选择"
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    proxies:
+      - JP-OpenComputerNetwork
+      - JP-AsahiNet-1
+      - JP-KDDI-1
+      - JP-KansaiInfoSys
+      - JP-KDDI-2
+      - JP-TenriUniv
+      - JP-KDDI-3
+      - JP-NTTDocomo
+      - US-ATT-1
+      - US-ATT-2
+      - DE-DeutscheTelekom
+      - FR-Orange
+      - GB-Navarino
+      - FR-Free
+      - CY-EPIC
+      - TW-Chunghwa
+      - JP-EDU-IAMAS
+      - JP-EDU-JPNIC-1
+      - JP-EDU-JPNIC-2
+      - JP-EDU-JPNIC-3
+      - JP-EDU-JPNIC-4
+
+  - name: "🇯🇵 日本节点"
+    type: select
+    proxies:
+      - JP-OpenComputerNetwork
+      - JP-AsahiNet-1
+      - JP-KDDI-1
+      - JP-KansaiInfoSys
+      - JP-KDDI-2
+      - JP-TenriUniv
+      - JP-KDDI-3
+      - JP-NTTDocomo
+      - JP-EDU-IAMAS
+      - JP-EDU-JPNIC-1
+      - JP-EDU-JPNIC-2
+      - JP-EDU-JPNIC-3
+      - JP-EDU-JPNIC-4
+
+  - name: "🇺🇸 美国节点"
+    type: select
+    proxies:
+      - US-ATT-1
+      - US-ATT-2
+
+  - name: "🇪🇺 欧洲节点"
+    type: select
+    proxies:
+      - DE-DeutscheTelekom
+      - FR-Orange
+      - GB-Navarino
+      - FR-Free
+      - CY-EPIC
+
+  - name: "🇹🇼 台湾节点"
+    type: select
+    proxies:
+      - TW-Chunghwa
+
+rules:
+  - DOMAIN-SUFFIX,google.com,🚀 节点选择
+  - DOMAIN-KEYWORD,google,🚀 节点选择
+  - DOMAIN-SUFFIX,youtube.com,🚀 节点选择
+  - DOMAIN-SUFFIX,facebook.com,🚀 节点选择
+  - DOMAIN-SUFFIX,twitter.com,🚀 节点选择
+  - GEOIP,CN,DIRECT
+  - MATCH,🚀 节点选择

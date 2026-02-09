@@ -1,0 +1,3 @@
+{
+  "code": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract HelloWorld {\n    string public message;\n    \n    constructor(string memory _message) {\n        message = _message;\n    }\n    \n    function getMessage() public view returns (string memory) {\n        return message;\n    }\n}"
+}

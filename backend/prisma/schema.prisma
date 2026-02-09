@@ -1,0 +1,248 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum BadgeLevel {
+  BRONZE
+  SILVER
+  GOLD
+}
+
+// Models
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  passwordHash  String?   @map("password_hash")
+  username      String    @unique
+  avatarUrl     String?   @map("avatar_url")
+  walletAddress String?   @unique @map("wallet_address")
+  role          Role      @default(USER)
+  bio           String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  lastLoginAt   DateTime? @map("last_login_at")
+
+  // Relations
+  progress      Progress[]
+  submits       ChallengeSubmit[]
+  posts         Post[]
+  comments      Comment[]
+  notes         Note[]
+  userBadges    UserBadge[]
+
+  @@index([email])
+  @@index([username])
+  @@index([walletAddress])
+  @@map("users")
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  level       Level
+  duration    Int?
+  orderIndex  Int      @map("order_index")
+  isPublished Boolean  @default(false) @map("is_published")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  chapters Chapter[]
+
+  @@index([level])
+  @@index([isPublished])
+  @@index([orderIndex])
+  @@map("courses")
+}
+
+model Chapter {
+  id         Int      @id @default(autoincrement())
+  courseId   Int      @map("course_id")
+  title      String
+  content    String
+  orderIndex Int      @map("order_index")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  course   Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress Progress[]
+  notes    Note[]
+
+  @@index([courseId])
+  @@index([orderIndex])
+  @@map("chapters")
+}
+
+model Progress {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @map("user_id")
+  chapterId   Int       @map("chapter_id")
+  completed   Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+  @@index([userId])
+  @@index([chapterId])
+  @@index([completed])
+  @@map("progress")
+}
+
+model Challenge {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  difficulty  Difficulty
+  template    String
+  testCases   Json
+  solution    String
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  submits ChallengeSubmit[]
+
+  @@index([difficulty])
+  @@map("challenges")
+}
+
+model ChallengeSubmit {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  challengeId Int      @map("challenge_id")
+  code        String
+  passed      Boolean  @default(false)
+  submittedAt DateTime @default(now()) @map("submitted_at")
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([challengeId])
+  @@index([passed])
+  @@map("challenge_submits")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  title     String
+  content   String
+  likes     Int      @default(0)
+  views     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments Comment[]
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([likes])
+  @@map("posts")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  postId    Int      @map("post_id")
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([postId])
+  @@index([createdAt])
+  @@map("comments")
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  chapterId Int?     @map("chapter_id")
+  title     String
+  content   String
+  isPublic  Boolean  @default(false) @map("is_public")
+  tags      String[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([chapterId])
+  @@index([isPublic])
+  @@map("notes")
+}
+
+model Badge {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
+  description String
+  icon        String
+  level       BadgeLevel
+  condition   Json
+  createdAt   DateTime   @default(now()) @map("created_at")
+
+  // Relations
+  userBadges UserBadge[]
+
+  @@index([level])
+  @@map("badges")
+}
+
+model UserBadge {
+  id       Int      @id @default(autoincrement())
+  userId   Int      @map("user_id")
+  badgeId  Int      @map("badge_id")
+  earnedAt DateTime @default(now()) @map("earned_at")
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+  @@index([badgeId])
+  @@index([earnedAt])
+  @@map("user_badges")
+}

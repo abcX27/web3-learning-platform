@@ -1,0 +1,6 @@
+[2026/2/4 13:53:19] [Log] [fsHook] readFileSync -> G:\DevelopSoftware\Environment\Typora\resources\app.bak\atom.compiled.dist.jsc
+------------------
+[2026/2/4 13:53:26] [Log] [拦截] app.quit() 被阻止
+------------------
+[2026/2/4 13:53:28] [Log] [拦截] app.quit() 被阻止
+------------------
